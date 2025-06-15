@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ContentView: View {
     @StateObject var store = ChallengeStore()
     @State private var showRestartAlert = false
+    @State private var selectedTab = 0
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        TabView(selection: $selectedTab) {
+            // Checklist Tab
+            NavigationStack {
                 VStack(spacing: 24) {
                     ProgressView75(challenge: store.challenge)
                         .padding(.horizontal)
@@ -36,8 +36,22 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 32)
                 }
+                .navigationTitle("75 Hard MVP")
             }
-            .navigationTitle("75 Hard MVP")
+            .tabItem {
+                Label("Checklist", systemImage: "checklist")
+            }
+            .tag(0)
+            
+            // Calendar Tab
+            NavigationStack {
+                CalendarView(challenge: store.challenge)
+                    .navigationTitle("Calendar")
+            }
+            .tabItem {
+                Label("Calendar", systemImage: "calendar")
+            }
+            .tag(1)
         }
         .onChange(of: store.challenge.currentDay) { _ in
             store.save()

@@ -17,6 +17,7 @@
 		6272FAB72DF60EAA00AD2D49 /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB62DF60EAA00AD2D49 /* Challenge.swift */; };
 		6272FAB92DF60EDA00AD2D49 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */; };
 		6272FB062DFE5C8D00AD2D49 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6272FB052DFE5C8D00AD2D49 /* .gitignore */; };
+		6272FB082DFE638200AD2D49 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FB072DFE638200AD2D49 /* CalendarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		6272FAB62DF60EAA00AD2D49 /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
 		6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		6272FB052DFE5C8D00AD2D49 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		6272FB072DFE638200AD2D49 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 				6272FAA32DF60DFC00AD2D49 /* ContentView.swift */,
 				6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */,
 				6272FAB22DF60E7700AD2D49 /* ChallengeStore.swift */,
+				6272FB072DFE638200AD2D49 /* CalendarView.swift */,
 				6272FAA52DF60DFD00AD2D49 /* Assets.xcassets */,
 				6272FAA72DF60DFD00AD2D49 /* SeventyFive.entitlements */,
 				6272FAA82DF60DFD00AD2D49 /* Preview Content */,
@@ -160,6 +163,7 @@
 			files = (
 				6272FAB12DF60E5A00AD2D49 /* ChecklistView.swift in Sources */,
 				6272FAB72DF60EAA00AD2D49 /* Challenge.swift in Sources */,
+				6272FB082DFE638200AD2D49 /* CalendarView.swift in Sources */,
 				6272FAA42DF60DFC00AD2D49 /* ContentView.swift in Sources */,
 				6272FAB52DF60E9A00AD2D49 /* ChallengeDay.swift in Sources */,
 				6272FAB92DF60EDA00AD2D49 /* ProgressView.swift in Sources */,
