@@ -8,14 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var store = ChallengeStore()
+    @State private var showRestartAlert = false
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            VStack {
+                ProgressView75(challenge: store.challenge)
+                ChecklistView(challenge: store.challenge, showRestartAlert: $showRestartAlert)
+                Spacer()
+                Button("Restart Challenge") {
+                    showRestartAlert = true
+                }
+                .foregroundColor(.red)
+                .padding(.bottom)
+            }
+            .navigationTitle("75 Hard MVP")
         }
-        .padding()
+        .onChange(of: store.challenge.currentDay) { _ in
+            store.save()
+        }
+        .onChange(of: store.challenge.days) { _ in
+            store.save()
+        }
+        .alert(isPresented: $showRestartAlert) {
+            Alert(
+                title: Text("Restart Challenge?"),
+                message: Text("Are you sure you want to restart from Day 1?"),
+                primaryButton: .destructive(Text("Restart")) {
+                    store.reset()
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
 }
 
