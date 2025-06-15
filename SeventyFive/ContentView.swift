@@ -7,20 +7,35 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct ContentView: View {
     @StateObject var store = ChallengeStore()
     @State private var showRestartAlert = false
+
     var body: some View {
-        NavigationView {
-            VStack {
-                ProgressView75(challenge: store.challenge)
-                ChecklistView(challenge: store.challenge, showRestartAlert: $showRestartAlert)
-                Spacer()
-                Button("Restart Challenge") {
-                    showRestartAlert = true
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    ProgressView75(challenge: store.challenge)
+                        .padding(.horizontal)
+                    
+                    ChecklistView(challenge: store.challenge, showRestartAlert: $showRestartAlert)
+                        .padding(.horizontal)
+                    
+                    Spacer()
+                    
+                    Button("Restart Challenge") {
+                        showRestartAlert = true
+                    }
+                    .foregroundColor(.red)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.red.opacity(0.1))
+                    .cornerRadius(10)
+                    .padding(.horizontal)
+                    .padding(.bottom, 32)
                 }
-                .foregroundColor(.red)
-                .padding(.bottom)
             }
             .navigationTitle("75 Hard MVP")
         }
