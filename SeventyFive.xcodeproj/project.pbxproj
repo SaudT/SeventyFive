@@ -16,6 +16,7 @@
 		6272FAB52DF60E9A00AD2D49 /* ChallengeDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB42DF60E9A00AD2D49 /* ChallengeDay.swift */; };
 		6272FAB72DF60EAA00AD2D49 /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB62DF60EAA00AD2D49 /* Challenge.swift */; };
 		6272FAB92DF60EDA00AD2D49 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */; };
+		6272FB062DFE5C8D00AD2D49 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6272FB052DFE5C8D00AD2D49 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		6272FAB42DF60E9A00AD2D49 /* ChallengeDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeDay.swift; sourceTree = "<group>"; };
 		6272FAB62DF60EAA00AD2D49 /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
 		6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		6272FB052DFE5C8D00AD2D49 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +48,7 @@
 		6272FA952DF60DFC00AD2D49 = {
 			isa = PBXGroup;
 			children = (
+				6272FB052DFE5C8D00AD2D49 /* .gitignore */,
 				6272FAA02DF60DFC00AD2D49 /* SeventyFive */,
 				6272FA9F2DF60DFC00AD2D49 /* Products */,
 			);
@@ -143,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6272FAAA2DF60DFD00AD2D49 /* Preview Assets.xcassets in Resources */,
+				6272FB062DFE5C8D00AD2D49 /* .gitignore in Resources */,
 				6272FAA62DF60DFD00AD2D49 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
