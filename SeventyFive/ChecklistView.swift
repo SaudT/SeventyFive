@@ -10,36 +10,110 @@ import SwiftUI
 struct ChecklistView: View {
     @ObservedObject var challenge: Challenge
     @Binding var showRestartAlert: Bool
-
+    
     var body: some View {
         let day = challenge.today
         VStack(alignment: .center, spacing: 24) {
-            Text("Day \(challenge.currentDay) Checklist")
-                .font(.title2)
-                .bold()
-                .padding(.bottom, 8)
+            // Day Navigation Header
+            HStack {
+                Button(action: {
+                    challenge.goToDay(challenge.currentDay - 1)
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(challenge.currentDay > 1 ? .blue : .gray)
+                        .font(.title2)
+                }
+                .disabled(challenge.currentDay <= 1)
+                
+                Spacer()
+                
+                VStack(spacing: 4) {
+                    Text("Day \(challenge.currentDay) of 75")
+                        .font(.title2)
+                        .bold()
+                    
+                    if let dayDate = day.date {
+                        Text(formatDate(dayDate))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    if day.completedDate != nil {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.green)
+                                .font(.caption)
+                            Text("Completed")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                Button(action: {
+                    challenge.goToDay(challenge.currentDay + 1)
+                }) {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(challenge.currentDay < 75 ? .blue : .gray)
+                        .font(.title2)
+                }
+                .disabled(challenge.currentDay >= 75)
+            }
+            .padding(.bottom, 8)
             
             VStack(spacing: 16) {
-                ChecklistItem(title: "1st 45-min Workout", isCompleted: binding(for: \.workout1))
-                ChecklistItem(title: "2nd 45-min Workout", isCompleted: binding(for: \.workout2Outdoor))
-                ChecklistItem(title: "Followed Diet", isCompleted: binding(for: \.diet))
+                ChecklistItem(title: "45-min Workout (anywhere)", isCompleted: binding(for: \.workout1))
+                ChecklistItem(title: "45-min Workout (outdoors)", isCompleted: binding(for: \.workout2Outdoor))
+                ChecklistItem(title: "Follow Diet (no cheat/alcohol)", isCompleted: binding(for: \.diet))
                 ChecklistItem(title: "Drink 1 Gallon Water", isCompleted: binding(for: \.water))
                 ChecklistItem(title: "Read 10 Pages (non-fiction)", isCompleted: binding(for: \.reading))
                 ChecklistItem(title: "Take Progress Photo", isCompleted: binding(for: \.progressPhoto))
             }
             .padding(.vertical, 8)
-
-            if day.isComplete {
-                Button("Complete Day") {
-                    challenge.advanceDay()
+            
+            // Action Buttons
+            VStack(spacing: 12) {
+                if day.isComplete && day.completedDate == nil {
+                    Button("Mark Day Complete") {
+                        challenge.markDayComplete()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
+                } else if day.completedDate != nil {
+                    Button("Unmark Completion") {
+                        challenge.unmarkDayComplete()
+                    }
+                    .buttonStyle(.bordered)
+                    .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 16)
+                
+                // Quick day jumper
+                HStack(spacing: 8) {
+                    Button("Today") {
+                        challenge.goToCurrentExpectedDay()
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.caption)
+                    
+                    Button("Day 1") {
+                        challenge.goToDay(1)
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.caption)
+                    
+                    Button("Last Day") {
+                        challenge.goToLastAccessibleDay()
+                    }
+                    .buttonStyle(.bordered)
+                    .font(.caption)
+                }
             }
+            .padding(.top, 16)
         }
         .padding()
-        // .background(Color(uiColor: .systemBackground))
+//        .background(Color(uiColor: .systemBackground))
         .cornerRadius(12)
         .shadow(radius: 2)
         .alert(isPresented: $showRestartAlert) {
@@ -53,7 +127,7 @@ struct ChecklistView: View {
             )
         }
     }
-
+    
     private func binding(for keyPath: WritableKeyPath<ChallengeDay, Bool>) -> Binding<Bool> {
         Binding(
             get: { challenge.days[challenge.currentDay - 1][keyPath: keyPath] },
@@ -61,6 +135,12 @@ struct ChecklistView: View {
                 challenge.markTask(keyPath, completed: newValue)
             }
         )
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
     }
 }
 
@@ -82,89 +162,22 @@ struct ChecklistItem: View {
                     .foregroundColor(.primary)
                     .strikethrough(isCompleted)
             }
-            .frame(maxWidth: .infinity, alignment: .center)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .contentShape(Rectangle())
         }
         .buttonStyle(PlainButtonStyle())
         .padding(.vertical, 8)
+        .padding(.horizontal, 12)
+//        .background(Color(uiColor: .secondarySystemBackground))
+        .cornerRadius(8)
     }
 }
-
-
-
-//----------------------------//
-struct ProgressView: View {
-    @StateObject var store = ChallengeStore()
-    @State private var showRestartAlert = false
-    @State private var selectedTab = 0
-
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            // Checklist Tab
-            NavigationStack {
-                VStack(spacing: 24) {
-                    ProgressView75(challenge: store.challenge)
-                        .padding(.horizontal)
-                    
-                    ChecklistView(challenge: store.challenge, showRestartAlert: $showRestartAlert)
-                        .padding(.horizontal)
-                    
-                    Spacer()
-                    
-                    Button("Restart Challenge") {
-                        showRestartAlert = true
-                    }
-                    .foregroundColor(.red)
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.red.opacity(0.1))
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                    .padding(.bottom, 32)
-                }
-                .navigationTitle("75 Hard MVP")
-            }
-            .tabItem {
-                Label("Checklist", systemImage: "checklist")
-            }
-            .tag(0)
-            
-            // Calendar Tab
-            NavigationStack {
-                CalendarView(challenge: store.challenge)
-                    .navigationTitle("Calendar")
-            }
-            .tabItem {
-                Label("Calendar", systemImage: "calendar")
-            }
-            .tag(1)
-        }
-        .onChange(of: store.challenge.currentDay) { _ in
-            store.save()
-        }
-        .onChange(of: store.challenge.days) { _ in
-            store.save()
-        }
-        .alert(isPresented: $showRestartAlert) {
-            Alert(
-                title: Text("Restart Challenge?"),
-                message: Text("Are you sure you want to restart from Day 1?"),
-                primaryButton: .destructive(Text("Restart")) {
-                    store.reset()
-                },
-                secondaryButton: .cancel()
-            )
-        }
-    }
-}
-
-
 
 
 
 struct ProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        ProgressView()
+        ContentView()
             .previewDevice("iPhone 14 Pro")
     }
 }

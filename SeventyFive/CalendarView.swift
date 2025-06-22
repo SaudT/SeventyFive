@@ -51,7 +51,9 @@ struct CalendarView: View {
                                     date: date,
                                     dayData: dayData,
                                     isToday: calendar.isDateInToday(date),
-                                    isInChallengePeriod: isDateInChallengePeriod(date)
+                                    isInChallengePeriod: isDateInChallengePeriod(date),
+                                    isSelected: isSelectedDay(date),
+                                    onTap: { selectDay(date) }
                                 )
                             } else {
                                 Spacer().frame(maxWidth: .infinity)
@@ -69,8 +71,8 @@ struct CalendarView: View {
                     LegendItem(color: .red, text: "Failed")
                 }
                 HStack(spacing: 20) {
-                    LegendItem(color: .blue, text: "Current Day")
-                    LegendItem(color: .gray, text: "Future/Past")
+                    LegendItem(color: .blue, text: "Today")
+                    LegendItem(color: .purple, text: "Selected")
                 }
             }
             .padding(.top)
@@ -148,6 +150,17 @@ struct CalendarView: View {
         let challengeEnd = calendar.date(byAdding: .day, value: 74, to: challenge.startDate) ?? challenge.startDate
         return date >= challenge.startDate && date <= challengeEnd
     }
+    
+    private func isSelectedDay(_ date: Date) -> Bool {
+        guard let currentDayDate = challenge.today.date else { return false }
+        return calendar.isDate(date, inSameDayAs: currentDayDate)
+    }
+    
+    private func selectDay(_ date: Date) {
+        if let dayData = getDayData(for: date) {
+            challenge.goToDay(dayData.id)
+        }
+    }
 }
 
 struct DayCell: View {
@@ -155,24 +168,36 @@ struct DayCell: View {
     let dayData: ChallengeDay?
     let isToday: Bool
     let isInChallengePeriod: Bool
+    let isSelected: Bool
+    let onTap: () -> Void
     
     var body: some View {
-        ZStack {
-            Circle()
-                .fill(backgroundColor)
-                .frame(width: 36, height: 36)
-            
-            if isToday {
+        Button(action: onTap) {
+            ZStack {
                 Circle()
-                    .stroke(Color.blue, lineWidth: 2)
+                    .fill(backgroundColor)
                     .frame(width: 36, height: 36)
+                
+                if isToday {
+                    Circle()
+                        .stroke(Color.blue, lineWidth: 2)
+                        .frame(width: 36, height: 36)
+                }
+                
+                if isSelected {
+                    Circle()
+                        .stroke(Color.purple, lineWidth: 3)
+                        .frame(width: 40, height: 40)
+                }
+                
+                Text("\(Calendar.current.component(.day, from: date))")
+                    .font(.system(size: 14, weight: isToday ? .bold : .regular))
+                    .foregroundColor(textColor)
             }
-            
-            Text("\(Calendar.current.component(.day, from: date))")
-                .font(.system(size: 14, weight: isToday ? .bold : .regular))
-                .foregroundColor(textColor)
         }
+        .buttonStyle(PlainButtonStyle())
         .frame(maxWidth: .infinity)
+        .disabled(!isInChallengePeriod)
     }
     
     private var backgroundColor: Color {

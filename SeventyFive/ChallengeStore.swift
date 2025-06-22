@@ -27,8 +27,8 @@ class ChallengeStore: ObservableObject {
         }
     }
 
-    func reset() {
-        challenge.restart()
-        save()
-    }
+//    func reset() {
+//        challenge.restart()
+//        save()
+//    }
 }

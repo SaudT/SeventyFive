@@ -18,7 +18,7 @@ class Challenge: ObservableObject, Codable {
     }
     
     init() {
-        let startDate = Date()
+        let startDate = Date() // Create local variable first
         self.startDate = startDate
         self.days = (1...75).map { dayNumber in
             var day = ChallengeDay(id: dayNumber)
@@ -57,6 +57,39 @@ class Challenge: ObservableObject, Codable {
         if currentDay < 75 && today.isComplete {
             currentDay += 1
         }
+    }
+    
+    func goToDay(_ dayNumber: Int) {
+        if dayNumber >= 1 && dayNumber <= 75 {
+            currentDay = dayNumber
+        }
+    }
+    
+    func goToCurrentExpectedDay() {
+        currentDay = currentExpectedDay
+    }
+    
+    func goToLastAccessibleDay() {
+        // Find the highest day that's been started or completed
+        for i in (1...75).reversed() {
+            if days[i-1].date != nil && days[i-1].date! <= Date() {
+                currentDay = i
+                return
+            }
+        }
+        currentDay = 1
+    }
+    
+    func markDayComplete() {
+        if days[currentDay - 1].isComplete && days[currentDay - 1].completedDate == nil {
+            days[currentDay - 1].completedDate = Date()
+            objectWillChange.send()
+        }
+    }
+    
+    func unmarkDayComplete() {
+        days[currentDay - 1].completedDate = nil
+        objectWillChange.send()
     }
     
     func checkAndUpdateCurrentDay() {

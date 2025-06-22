@@ -28,5 +28,10 @@ struct ProgressView75: View {
     }
 }
 
-
+struct Progress_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .previewDevice("iPhone 14 Pro")
+    }
+}
 
