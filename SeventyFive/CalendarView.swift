@@ -4,6 +4,7 @@ struct CalendarView: View {
     @ObservedObject var challenge: Challenge
     private let calendar = Calendar.current
     private let daysInWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    @State private var selectedDate = Date()
     
     var body: some View {
         VStack(spacing: 20) {
@@ -11,16 +12,16 @@ struct CalendarView: View {
                 .font(.title)
                 .bold()
             
-            // Month selector (static for now)
+            // Month selector
             HStack {
-                Button(action: {}) {
+                Button(action: { changeMonth(-1) }) {
                     Image(systemName: "chevron.left")
                         .foregroundColor(.blue)
                 }
-                Text("March 2024")
+                Text(monthYearString)
                     .font(.title2)
                     .bold()
-                Button(action: {}) {
+                Button(action: { changeMonth(1) }) {
                     Image(systemName: "chevron.right")
                         .foregroundColor(.blue)
                 }
@@ -37,7 +38,7 @@ struct CalendarView: View {
             }
             .padding(.horizontal)
             
-            // Calendar grid with simple bubbles
+            // Calendar grid
             let weeks = getWeeksInMonth()
             VStack(spacing: 8) {
                 ForEach(0..<weeks.count, id: \.self) { weekIndex in
@@ -45,8 +46,13 @@ struct CalendarView: View {
                         let week = weeks[weekIndex]
                         ForEach(0..<week.count, id: \.self) { dayIndex in
                             if let date = week[dayIndex] {
-                                let isCompleted = isDayCompleted(date)
-                                DayCell(date: date, isCompleted: isCompleted)
+                                let dayData = getDayData(for: date)
+                                DayCell(
+                                    date: date,
+                                    dayData: dayData,
+                                    isToday: calendar.isDateInToday(date),
+                                    isInChallengePeriod: isDateInChallengePeriod(date)
+                                )
                             } else {
                                 Spacer().frame(maxWidth: .infinity)
                             }
@@ -57,32 +63,75 @@ struct CalendarView: View {
             .padding(.horizontal, 2)
             
             // Legend
-            HStack(spacing: 20) {
-                LegendItem(color: .blue, text: "Completed")
-                LegendItem(color: .gray, text: "Not Started")
+            VStack(spacing: 8) {
+                HStack(spacing: 20) {
+                    LegendItem(color: .green, text: "Completed")
+                    LegendItem(color: .red, text: "Failed")
+                }
+                HStack(spacing: 20) {
+                    LegendItem(color: .blue, text: "Current Day")
+                    LegendItem(color: .gray, text: "Future/Past")
+                }
             }
             .padding(.top)
+            
+            // Challenge info
+            VStack(spacing: 4) {
+                Text("Challenge started: \(formattedDate(challenge.startDate))")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                if let endDate = calendar.date(byAdding: .day, value: 74, to: challenge.startDate) {
+                    Text("Challenge ends: \(formattedDate(endDate))")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
         }
         .padding()
+        .onAppear {
+            selectedDate = challenge.startDate
+        }
+    }
+    
+    private var monthYearString: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: selectedDate)
+    }
+    
+    private func changeMonth(_ direction: Int) {
+        if let newDate = calendar.date(byAdding: .month, value: direction, to: selectedDate) {
+            selectedDate = newDate
+        }
+    }
+    
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
     }
     
     // Returns an array of weeks, each week is an array of 7 optional Dates
     private func getWeeksInMonth() -> [[Date?]] {
-        let today = Date()
-        let month = calendar.component(.month, from: today)
-        let year = calendar.component(.year, from: today)
+        let month = calendar.component(.month, from: selectedDate)
+        let year = calendar.component(.year, from: selectedDate)
         let firstDayOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1))!
         let daysInMonth = calendar.range(of: .day, in: .month, for: firstDayOfMonth)!.count
         let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth)
+        
         var days: [Date?] = Array(repeating: nil, count: firstWeekday - 1)
+        
         for day in 1...daysInMonth {
             if let date = calendar.date(from: DateComponents(year: year, month: month, day: day)) {
                 days.append(date)
             }
         }
+        
         while days.count % 7 != 0 {
             days.append(nil)
         }
+        
         // Split into weeks
         var weeks: [[Date?]] = []
         for i in stride(from: 0, to: days.count, by: 7) {
@@ -91,25 +140,63 @@ struct CalendarView: View {
         return weeks
     }
     
-    private func isDayCompleted(_ date: Date) -> Bool {
-        // TODO: Implement actual completion check based on challenge data
-        // For demo, mark every 2nd and 3rd day as completed
-        let day = calendar.component(.day, from: date)
-        return day % 2 == 0 || day % 3 == 0
+    private func getDayData(for date: Date) -> ChallengeDay? {
+        return challenge.getDayForDate(date)
+    }
+    
+    private func isDateInChallengePeriod(_ date: Date) -> Bool {
+        let challengeEnd = calendar.date(byAdding: .day, value: 74, to: challenge.startDate) ?? challenge.startDate
+        return date >= challenge.startDate && date <= challengeEnd
     }
 }
 
 struct DayCell: View {
     let date: Date
-    let isCompleted: Bool
+    let dayData: ChallengeDay?
+    let isToday: Bool
+    let isInChallengePeriod: Bool
     
     var body: some View {
-        Text("\(Calendar.current.component(.day, from: date))")
-            .frame(width: 36, height: 36)
-            .background(isCompleted ? Color.blue : Color.clear)
-            .foregroundColor(isCompleted ? .white : .gray)
-            .clipShape(Circle())
-            .frame(maxWidth: .infinity)
+        ZStack {
+            Circle()
+                .fill(backgroundColor)
+                .frame(width: 36, height: 36)
+            
+            if isToday {
+                Circle()
+                    .stroke(Color.blue, lineWidth: 2)
+                    .frame(width: 36, height: 36)
+            }
+            
+            Text("\(Calendar.current.component(.day, from: date))")
+                .font(.system(size: 14, weight: isToday ? .bold : .regular))
+                .foregroundColor(textColor)
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    private var backgroundColor: Color {
+        guard let dayData = dayData, isInChallengePeriod else {
+            return .clear
+        }
+        
+        if dayData.completedDate != nil {
+            return .green
+        } else if let dayDate = dayData.date, dayDate < Date() {
+            return .red.opacity(0.7)
+        } else {
+            return .gray.opacity(0.3)
+        }
+    }
+    
+    private var textColor: Color {
+        if !isInChallengePeriod {
+            return .gray
+        } else if dayData?.completedDate != nil {
+            return .white
+        } else {
+            return .primary
+        }
     }
 }
 
@@ -126,4 +213,11 @@ struct LegendItem: View {
                 .font(.caption)
         }
     }
-} 
+}
+
+struct CalenderView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+            .previewDevice("iPhone 14 Pro")
+    }
+}

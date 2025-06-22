@@ -7,11 +7,13 @@
 
 import SwiftUI
 
+import SwiftUI
+
 struct ContentView: View {
     @StateObject var store = ChallengeStore()
     @State private var showRestartAlert = false
     @State private var selectedTab = 0
-
+    
     var body: some View {
         TabView(selection: $selectedTab) {
             // Checklist Tab
@@ -36,7 +38,7 @@ struct ContentView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 32)
                 }
-                .navigationTitle("75 Hard MVP")
+                .navigationTitle("75 Hard")
             }
             .tabItem {
                 Label("Checklist", systemImage: "checklist")
@@ -58,6 +60,9 @@ struct ContentView: View {
         }
         .onChange(of: store.challenge.days) { _ in
             store.save()
+        }
+        .onAppear {
+            store.challenge.checkAndUpdateCurrentDay()
         }
         .alert(isPresented: $showRestartAlert) {
             Alert(

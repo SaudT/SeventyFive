@@ -13,8 +13,6 @@ struct ProgressView75: View {
 
     var body: some View {
         VStack {
-            Text("75 Hard Progress")
-                .font(.headline)
             HStack {
                 ForEach(0..<75, id: \.self) { i in
                     Circle()
@@ -29,3 +27,6 @@ struct ProgressView75: View {
         .padding(.horizontal)
     }
 }
+
+
+
