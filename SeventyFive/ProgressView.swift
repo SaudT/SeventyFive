@@ -17,11 +17,11 @@ struct ProgressView75: View {
                 ForEach(0..<75, id: \.self) { i in
                     Circle()
                         .frame(width: 6, height: 6)
-                        .foregroundColor(i < challenge.currentDay - 1 ? .green : .gray.opacity(0.3))
+                        .foregroundColor(i < challenge.streakCount - 1 ? .green : .gray.opacity(0.3))
                 }
             }
             .padding(.vertical, 8)
-            Text("Day \(challenge.currentDay) of 75")
+            Text("Day \(challenge.streakCount) of 75")
                 .font(.subheadline)
         }
         .padding(.horizontal)

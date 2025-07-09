@@ -18,6 +18,8 @@
 		6272FAB92DF60EDA00AD2D49 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */; };
 		6272FB062DFE5C8D00AD2D49 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6272FB052DFE5C8D00AD2D49 /* .gitignore */; };
 		6272FB082DFE638200AD2D49 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FB072DFE638200AD2D49 /* CalendarView.swift */; };
+		6272FB0C2E183C3F00AD2D49 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6272FB0B2E183C3F00AD2D49 /* HomeView.swift */; };
+		62B74F972E18654800202758 /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B74F962E18654800202758 /* StreakView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		6272FAB82DF60EDA00AD2D49 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		6272FB052DFE5C8D00AD2D49 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6272FB072DFE638200AD2D49 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		6272FB0B2E183C3F00AD2D49 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		62B74F962E18654800202758 /* StreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				6272FAB02DF60E5A00AD2D49 /* ChecklistView.swift */,
+				6272FB0B2E183C3F00AD2D49 /* HomeView.swift */,
+				62B74F962E18654800202758 /* StreakView.swift */,
 				6272FAB62DF60EAA00AD2D49 /* Challenge.swift */,
 				6272FAB42DF60E9A00AD2D49 /* ChallengeDay.swift */,
 				6272FAA12DF60DFC00AD2D49 /* SeventyFiveApp.swift */,
@@ -161,6 +167,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62B74F972E18654800202758 /* StreakView.swift in Sources */,
+				6272FB0C2E183C3F00AD2D49 /* HomeView.swift in Sources */,
 				6272FAB12DF60E5A00AD2D49 /* ChecklistView.swift in Sources */,
 				6272FAB72DF60EAA00AD2D49 /* Challenge.swift in Sources */,
 				6272FB082DFE638200AD2D49 /* CalendarView.swift in Sources */,

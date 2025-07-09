@@ -9,7 +9,7 @@
 import Foundation
 
 struct ChallengeDay: Identifiable, Codable, Equatable {
-    let id: Int // 1-based day number
+    let id: String // 1-based day number
     var date: Date? // When this day was started/assigned
     var completedDate: Date? // When this day was completed
     var workout1: Bool = false

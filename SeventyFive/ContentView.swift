@@ -7,73 +7,64 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ContentView: View {
     @StateObject var store = ChallengeStore()
-    @State private var showRestartAlert = false
+//    @State private var showRestartAlert = false
     @State private var selectedTab = 0
+    @State var launchScreen = false
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            // Checklist Tab
-            NavigationStack {
-                VStack(spacing: 24) {
-//                    ProgressView75(challenge: store.challenge)
-//                        .padding(.horizontal)
-
-                    ChecklistView(challenge: store.challenge, showRestartAlert: $showRestartAlert)
-                        .padding(.horizontal)
-                    
+        Group {
+            if launchScreen{
+                VStack{
+                    HomeView()
+                    StreakView(challenge: store.challenge)
                     Spacer()
-                    
-//                    Button("Restart Challenge") {
-//                        showRestartAlert = true
-//                    }
-//                    .foregroundColor(.red)
-//                    .padding()
-//                    .frame(maxWidth: .infinity)
-//                    .background(Color.red.opacity(0.1))
-//                    .cornerRadius(10)
-//                    .padding(.horizontal)
-//                    .padding(.bottom, 32)
                 }
-//                .navigationTitle("75 Hard")
             }
-            .tabItem {
-                Label("Checklist", systemImage: "checklist")
+            else{
+                TabView(selection: $selectedTab) {
+                    // Checklist Tab
+                    NavigationStack {
+                        VStack(spacing: 24) {
+                            ChecklistView(challenge: store.challenge)
+                                .padding(.horizontal)
+                            Spacer()
+                            StreakView(challenge: store.challenge)
+                                .padding(.bottom, 20.0)
+                        }
+                    }
+                    .tabItem {
+                        Label("Checklist", systemImage: "checklist")
+                    }
+                    .tag(0)
+                    
+                    // Calendar Tab
+                    NavigationStack {
+                        CalendarView(challenge: store.challenge)
+                        //                    .navigationTitle("Calendar")
+                    }
+                    .tabItem {
+                        Label("Calendar", systemImage: "calendar")
+                    }
+                    .tag(1)
+                }
+                .onChange(of: store.challenge.streakCount) { _ in
+                    store.save()
+                }
+                .onChange(of: store.challenge.days) { _ in
+                    store.save()
+                }
+                .onAppear {
+                    store.challenge.checkAndUpdateCurrentDay()
+                }
             }
-            .tag(0)
-            
-            // Calendar Tab
-            NavigationStack {
-                CalendarView(challenge: store.challenge)
-//                    .navigationTitle("Calendar")
+        }
+        .onAppear() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1){
+                launchScreen = false
             }
-            .tabItem {
-                Label("Calendar", systemImage: "calendar")
-            }
-            .tag(1)
         }
-        .onChange(of: store.challenge.currentDay) { _ in
-            store.save()
-        }
-        .onChange(of: store.challenge.days) { _ in
-            store.save()
-        }
-        .onAppear {
-            store.challenge.checkAndUpdateCurrentDay()
-        }
-//        .alert(isPresented: $showRestartAlert) {
-//            Alert(
-//                title: Text("Restart Challenge?"),
-//                message: Text("Are you sure you want to restart from Day 1?"),
-//                primaryButton: .destructive(Text("Restart")) {
-//                    store.reset()
-//                },
-//                secondaryButton: .cancel()
-//            )
-//        }
     }
 }
 
